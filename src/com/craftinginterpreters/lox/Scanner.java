@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 
-class Scanner {
+public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
     private int start = 0;
@@ -36,7 +36,7 @@ class Scanner {
         keywords.put("while", WHILE);
     }
 
-    Scanner(String source) {
+    public Scanner(String source) {
         this.source = source;
     }
 
@@ -102,7 +102,11 @@ class Scanner {
             case '/':
                 if (matchNext('/')) { // Consume a // comment that goes until the end of the line.
                     discardCharactersUntilEndOfLine();
-                } else {
+                }
+                else if (matchNext('*')) { // Consume characters until we find */
+                    discardCharactersUntilEndOfBlockComment();
+                }
+                else {
                     addToken(SLASH);
                 }
                 break;
@@ -174,6 +178,18 @@ class Scanner {
     private void discardCharactersUntilEndOfLine() {
         while (peek() != '\n' && !isAtEnd())
             advance();
+    }
+
+    private void discardCharactersUntilEndOfBlockComment() {
+
+        while (peek() != '*' || peekNext() != '/') {
+            //System.out.println(String.format("Scanning %s (%b)   %s (%b)", peek(), (peek() != '*'), peekNext(), (peekNext() != '/')));
+            advance();
+        }
+        //System.out.println(String.format("Stopped on %s (%b)   %s (%b)", peek(), (peek() != '*'), peekNext(), (peekNext() != '/')));
+
+        advance(); // eat the *
+        advance(); // eat the /
     }
 
     private boolean matchNext(char expected) {
