@@ -60,7 +60,7 @@ class ScannerTest {
 
     @Test
     public void ignoresBlockComments() {
-        String source = "( /* this comment is ignored */ )";
+        String source = "( /* this comment and all tokens (/*+-) are ignored */ )";
         Scanner scanner = new Scanner(source);
 
         assertTokensMatch(asList(LEFT_PAREN, RIGHT_PAREN), scanner.scanTokens());
@@ -69,7 +69,7 @@ class ScannerTest {
     @Test
     public void ignoresBlockCommentsMultipleLines() {
         String source = "(\n" +
-                "/* this comment is ignored */\n" +
+                "/* these + tokens - are * / ignored */\n" +
                 ")\n";
         Scanner scanner = new Scanner(source);
 
@@ -77,6 +77,8 @@ class ScannerTest {
     }
 
     private void assertTokensMatch(List<TokenType> expectedTokens, List<Token> actualTokens) {
+        //dumpTokens(actualTokens);
+
         int expectedCount = expectedTokens.size();
         int reportedExpectedCount = expectedTokens.size();
         int actualCount = actualTokens.size();
@@ -109,5 +111,10 @@ class ScannerTest {
             String msg = "Expected list of tokens to end with EOF";
             assertEquals(EOF, actualTokens.get(actualCount - 1).type, msg);
         }
+    }
+
+    private void dumpTokens(List<Token> tokens) {
+        for (Token t : tokens)
+            System.out.println(t);
     }
 }
