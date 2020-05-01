@@ -58,6 +58,24 @@ class ScannerTest {
         assertTokensMatch(asList(LEFT_PAREN, RIGHT_PAREN), scanner.scanTokens());
     }
 
+    @Test
+    public void ignoresBlockComments() {
+        String source = "( /* this comment is ignored */ )";
+        Scanner scanner = new Scanner(source);
+
+        assertTokensMatch(asList(LEFT_PAREN, RIGHT_PAREN), scanner.scanTokens());
+    }
+
+    @Test
+    public void ignoresBlockCommentsMultipleLines() {
+        String source = "(\n" +
+                "/* this comment is ignored */\n" +
+                ")\n";
+        Scanner scanner = new Scanner(source);
+
+        assertTokensMatch(asList(LEFT_PAREN, RIGHT_PAREN), scanner.scanTokens());
+    }
+
     private void assertTokensMatch(List<TokenType> expectedTokens, List<Token> actualTokens) {
         int expectedCount = expectedTokens.size();
         int reportedExpectedCount = expectedTokens.size();
