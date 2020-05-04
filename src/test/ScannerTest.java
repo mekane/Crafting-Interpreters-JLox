@@ -21,7 +21,49 @@ class ScannerTest {
         String source = "";
         Scanner scanner = new Scanner(source);
 
-        //assertTokensMatch(asList(EOF), scanner.scanTokens());
+        assertTokensMatch(asList(EOF), scanner.scanTokens());
+    }
+
+    @Test
+    public void scansNumbers() {
+        String source = "0 1 2 4";
+        Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scanTokens();
+
+        assertTokensMatch(asList(NUMBER, NUMBER, NUMBER, NUMBER), tokens);
+        assertEquals(0.0, tokens.get(0).literal);
+        assertEquals(1.0, tokens.get(1).literal);
+        assertEquals(2.0, tokens.get(2).literal);
+        assertEquals(4.0, tokens.get(3).literal);
+    }
+
+    @Test
+    public void scansStrings() {
+        String source = "\"foo\" \"bar\"";
+        Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scanTokens();
+
+        assertTokensMatch(asList(STRING, STRING), tokens);
+        assertEquals("foo", tokens.get(0).literal);
+        assertEquals("bar", tokens.get(1).literal);
+    }
+
+    @Test
+    public void scansBooleans() {
+        String source = "true false";
+        Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scanTokens();
+
+        assertTokensMatch(asList(TRUE, FALSE), tokens);
+    }
+
+    @Test
+    public void scansNil() {
+        String source = "nil";
+        Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scanTokens();
+
+        assertTokensMatch(asList(NIL), tokens);
     }
 
     @Test
