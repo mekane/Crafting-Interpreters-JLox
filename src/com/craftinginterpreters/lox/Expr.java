@@ -32,9 +32,9 @@ public abstract class Expr {
     }
 
     public static class Binary extends Expr {
-        final Expr left;
-        final Token operator;
-        final Expr right;
+        public final Expr left;
+        public final Token operator;
+        public final Expr right;
 
         Binary(Expr left, Token operator, Expr right) {
             this.left = left;
