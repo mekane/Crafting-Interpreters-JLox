@@ -10,26 +10,26 @@ class ParserTest {
     @Test
     public void parsesTerminals() {
         Expr.Literal e = (Expr.Literal) parseSingleExpression("27");
-        assertEquals(e.value, 27.0);
+        assertEquals(27.0, e.value);
 
         e = (Expr.Literal) parseSingleExpression("\"27\"");
-        assertEquals(e.value, "27");
+        assertEquals("27", e.value);
 
         e = (Expr.Literal) parseSingleExpression("false");
-        assertEquals(e.value, false);
+        assertEquals(false, e.value);
 
         e = (Expr.Literal) parseSingleExpression("true");
-        assertEquals(e.value, true);
+        assertEquals(true, e.value);
 
         e = (Expr.Literal) parseSingleExpression("nil");
-        assertEquals(e.value, null);
+        assertEquals(null, e.value);
     }
 
     @Test
     public void parsesExpressionsInParentheses() {
         Expr.Grouping g = (Expr.Grouping) parseSingleExpression("(19)");
         Expr.Literal e = (Expr.Literal) g.expression;
-        assertEquals(e.value, 19.0);
+        assertEquals(19.0, e.value);
     }
 
     @Test
