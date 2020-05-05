@@ -74,6 +74,53 @@ class ParserTest {
         assertEquals(true, right.value);
     }
 
+    @Test
+    public void parsesComparisonGreaterThanOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("2 > 3");
+        Token token = e.operator;
+        Expr.Literal left = (Expr.Literal) e.left;
+        Expr.Literal right = (Expr.Literal) e.right;
+
+        assertEquals(TokenType.GREATER, token.type);
+        assertEquals(2.0, left.value);
+        assertEquals(3.0, right.value);
+    }
+
+    @Test
+    public void parsesComparisonGreaterThanEqualToOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("3 >= 4");
+        Token token = e.operator;
+        Expr.Literal left = (Expr.Literal) e.left;
+        Expr.Literal right = (Expr.Literal) e.right;
+
+        assertEquals(TokenType.GREATER_EQUAL, token.type);
+        assertEquals(3.0, left.value);
+        assertEquals(4.0, right.value);
+    }
+
+    @Test
+    public void parsesComparisonLessThanOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("2 < 3");
+        Token token = e.operator;
+        Expr.Literal left = (Expr.Literal) e.left;
+        Expr.Literal right = (Expr.Literal) e.right;
+
+        assertEquals(TokenType.LESS, token.type);
+        assertEquals(2.0, left.value);
+        assertEquals(3.0, right.value);
+    }
+
+    @Test
+    public void parsesComparisonLessThanEqualToOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("3 <= 4");
+        Token token = e.operator;
+        Expr.Literal left = (Expr.Literal) e.left;
+        Expr.Literal right = (Expr.Literal) e.right;
+
+        assertEquals(TokenType.LESS_EQUAL, token.type);
+        assertEquals(3.0, left.value);
+        assertEquals(4.0, right.value);
+    }
 
     private Expr parseSingleExpression(String expression) {
         Parser p = new Parser(new Scanner(expression).scanTokens());
