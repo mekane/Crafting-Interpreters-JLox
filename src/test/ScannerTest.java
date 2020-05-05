@@ -118,6 +118,27 @@ class ScannerTest {
         assertTokensMatch(asList(LEFT_PAREN, RIGHT_PAREN), scanner.scanTokens());
     }
 
+    @Test
+    public void scansPlusSignAndNumbers() {
+        Scanner scanner = new Scanner("2 + 3");
+
+        assertTokensMatch(asList(NUMBER, PLUS, NUMBER), scanner.scanTokens());
+    }
+
+    @Test
+    public void scansMinusSignAndNumbers() {
+        Scanner scanner = new Scanner("2 - 3");
+
+        assertTokensMatch(asList(NUMBER, MINUS, NUMBER), scanner.scanTokens());
+    }
+
+    @Test
+    public void scansStarAndNumbers() {
+        Scanner scanner = new Scanner("3 * 4");
+
+        assertTokensMatch(asList(NUMBER, STAR, NUMBER), scanner.scanTokens());
+    }
+
     private void assertTokensMatch(List<TokenType> expectedTokens, List<Token> actualTokens) {
         //dumpTokens(actualTokens);
 
