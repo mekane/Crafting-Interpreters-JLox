@@ -98,13 +98,22 @@ class ParserTest {
         assertBinaryExpression(e, 2.0, TokenType.MINUS, 2.0);
     }
 
+    @Test
+    public void parsesMultiplicationOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("6 * 7");
+        assertBinaryExpression(e, 6.0, TokenType.STAR, 7.0);
+    }
 
+    @Test
+    public void parsesDivisionOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("100 / 20");
+        assertBinaryExpression(e, 100.0, TokenType.SLASH, 20.0);
+    }
 
     private Expr parseSingleExpression(String expression) {
         Parser p = new Parser(new Scanner(expression).scanTokens());
         return p.parse();
     }
-
 
     private void assertBinaryExpression(Expr.Binary e, boolean left, TokenType tokenType, boolean right) {
         assertEquals(tokenType, e.operator.type);
