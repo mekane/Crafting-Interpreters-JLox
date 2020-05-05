@@ -139,6 +139,16 @@ class ScannerTest {
         assertTokensMatch(asList(NUMBER, STAR, NUMBER), scanner.scanTokens());
     }
 
+    @Test
+    public void scansQuestionMarkAndColon() {
+        Scanner scanner = new Scanner("true ? true : false");
+
+        assertTokensMatch(asList(TRUE, QUESTION, TRUE, COLON, FALSE), scanner.scanTokens());
+    }
+
+
+
+
     private void assertTokensMatch(List<TokenType> expectedTokens, List<Token> actualTokens) {
         //dumpTokens(actualTokens);
 
