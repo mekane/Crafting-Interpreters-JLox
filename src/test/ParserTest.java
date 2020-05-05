@@ -122,8 +122,32 @@ class ParserTest {
         assertEquals(4.0, right.value);
     }
 
+    @Test
+    public void parsesAdditionOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("2 + 2");
+        assertBinaryExpression(e, 2.0, TokenType.PLUS, 2.0);
+    }
+
+    @Test
+    public void parsesSubtractionOperator() {
+        Expr.Binary e = (Expr.Binary) parseSingleExpression("2 - 2");
+        assertBinaryExpression(e, 2.0, TokenType.MINUS, 2.0);
+    }
+
+
+
     private Expr parseSingleExpression(String expression) {
         Parser p = new Parser(new Scanner(expression).scanTokens());
         return p.parse();
+    }
+
+    private void assertBinaryExpression(Expr.Binary e, double left, TokenType tokenType, double right) {
+        Token tokenActual = e.operator;
+        Expr.Literal leftActual = (Expr.Literal) e.left;
+        Expr.Literal rightActual = (Expr.Literal) e.right;
+
+        assertEquals(tokenType, tokenActual.type);
+        assertEquals(left, leftActual.value);
+        assertEquals(right, rightActual.value);
     }
 }
