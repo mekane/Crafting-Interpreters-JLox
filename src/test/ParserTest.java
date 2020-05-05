@@ -53,73 +53,37 @@ class ParserTest {
     @Test
     public void parsesEqualityOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("11 == 28");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.EQUAL_EQUAL, token.type);
-        assertEquals(11.0, left.value);
-        assertEquals(28.0, right.value);
+        assertBinaryExpression(e, 11.0, TokenType.EQUAL_EQUAL, 28.0);
     }
 
     @Test
     public void parsesNotEqualOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("false != true");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.BANG_EQUAL, token.type);
-        assertEquals(false, left.value);
-        assertEquals(true, right.value);
+        assertBinaryExpression(e, false, TokenType.BANG_EQUAL, true);
     }
 
     @Test
     public void parsesComparisonGreaterThanOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("2 > 3");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.GREATER, token.type);
-        assertEquals(2.0, left.value);
-        assertEquals(3.0, right.value);
+        assertBinaryExpression(e, 2.0, TokenType.GREATER, 3.0);
     }
 
     @Test
     public void parsesComparisonGreaterThanEqualToOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("3 >= 4");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.GREATER_EQUAL, token.type);
-        assertEquals(3.0, left.value);
-        assertEquals(4.0, right.value);
+        assertBinaryExpression(e, 3.0, TokenType.GREATER_EQUAL, 4.0);
     }
 
     @Test
     public void parsesComparisonLessThanOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("2 < 3");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.LESS, token.type);
-        assertEquals(2.0, left.value);
-        assertEquals(3.0, right.value);
+        assertBinaryExpression(e, 2.0, TokenType.LESS, 3.0);
     }
 
     @Test
     public void parsesComparisonLessThanEqualToOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("3 <= 4");
-        Token token = e.operator;
-        Expr.Literal left = (Expr.Literal) e.left;
-        Expr.Literal right = (Expr.Literal) e.right;
-
-        assertEquals(TokenType.LESS_EQUAL, token.type);
-        assertEquals(3.0, left.value);
-        assertEquals(4.0, right.value);
+        assertBinaryExpression(e, 3.0, TokenType.LESS_EQUAL, 4.0);
     }
 
     @Test
@@ -141,13 +105,16 @@ class ParserTest {
         return p.parse();
     }
 
-    private void assertBinaryExpression(Expr.Binary e, double left, TokenType tokenType, double right) {
-        Token tokenActual = e.operator;
-        Expr.Literal leftActual = (Expr.Literal) e.left;
-        Expr.Literal rightActual = (Expr.Literal) e.right;
 
-        assertEquals(tokenType, tokenActual.type);
-        assertEquals(left, leftActual.value);
-        assertEquals(right, rightActual.value);
+    private void assertBinaryExpression(Expr.Binary e, boolean left, TokenType tokenType, boolean right) {
+        assertEquals(tokenType, e.operator.type);
+        assertEquals(left, ((Expr.Literal) e.left).value);
+        assertEquals(right, ((Expr.Literal) e.right).value);
+    }
+
+    private void assertBinaryExpression(Expr.Binary e, double left, TokenType tokenType, double right) {
+        assertEquals(tokenType, e.operator.type);
+        assertEquals(left, ((Expr.Literal) e.left).value);
+        assertEquals(right, ((Expr.Literal) e.right).value);
     }
 }
