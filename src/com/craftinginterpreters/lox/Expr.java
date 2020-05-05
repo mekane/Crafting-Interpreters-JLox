@@ -48,6 +48,23 @@ public abstract class Expr {
         }
     }
 
+    public static class Ternary extends Expr {
+        public final Expr condition;
+        public final Expr left;
+        public final Expr right;
+
+        Ternary(Expr condition, Expr left, Expr right) {
+            this.condition = condition;
+            this.left = left;
+            this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitTernaryExpr(this);
+        }
+    }
+
     public static class Grouping extends Expr {
         public final Expr expression;
 
@@ -62,15 +79,17 @@ public abstract class Expr {
     }
 
 
-
     interface Visitor<R> {
         //R visitAssignExpr(Assign expr);
         R visitBinaryExpr(Binary expr);
+        R visitTernaryExpr(Ternary expr);
         //R visitCallExpr(Call expr);
         //R visitGetExpr(Get expr);
         R visitGroupingExpr(Grouping expr);
+
         R visitLiteralExpr(Literal expr);
-//        R visitLogicalExpr(Logical expr);
+
+        //        R visitLogicalExpr(Logical expr);
 //        R visitSetExpr(Set expr);
 //        R visitSuperExpr(Super expr);
 //        R visitThisExpr(This expr);

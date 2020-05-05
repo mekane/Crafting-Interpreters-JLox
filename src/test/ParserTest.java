@@ -8,6 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class ParserTest {
 
     @Test
+    public void parsesTernaryOperator() {
+        Expr.Ternary e = (Expr.Ternary) parseSingleExpression("true ? 7 : 9");
+
+        Expr.Literal cond = (Expr.Literal) e.condition;
+        Expr.Literal left = (Expr.Literal) e.left;
+        Expr.Literal right = (Expr.Literal) e.right;
+
+        assertEquals(true, cond.value);
+        assertEquals(7.0, left.value);
+        assertEquals(9.0, right.value);
+    }
+
+    @Test
     public void parsesNotEqualOperator() {
         Expr.Binary e = (Expr.Binary) parseSingleExpression("false != true");
         assertBinaryExpression(e, false, TokenType.BANG_EQUAL, true);

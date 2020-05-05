@@ -5,7 +5,7 @@ import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 
 /****
- expression     → equality ;
+ expression     → equality ("?" equality ":" equality)* ;
  equality       → comparison ( ( "!=" | "==" ) comparison )* ;
  comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
  addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
@@ -32,7 +32,25 @@ public class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        Expr expr = equality();
+
+        Expr left = null;
+        Expr right = null;
+
+        if (match(QUESTION)) {
+            left = equality();
+
+            if (match(COLON)) {
+                right = equality();
+
+                expr = new Expr.Ternary(expr, left, right);
+            }
+            else {
+                throw error(peek(), "Expect colon after beginning of ternary expression.");
+            }
+        }
+
+        return expr;
     }
 
     private Expr equality() {
@@ -83,7 +101,6 @@ public class Parser {
         return expr;
     }
 
-    //TODO: add unit tests for parser cases (equality, comparison, addition, multiplication)
     //TODO: refactor those four methods to use a common help function, which will need to take
     //      advantage of Java 8's method references to pass in the type of expression.
 
