@@ -288,6 +288,19 @@ public class InterpreterTest {
         assertRuntimeError(expr(1, lessEqual, "bar"), "Operands must be numbers");
     }
 
+    @Test
+    public void evaluatesTernaryOperators() {
+        Expr evaluatesToTrue = expr(99, greater, 1);
+        Expr A = new Expr.Literal("A");
+        Expr B = new Expr.Literal("B");
+
+        Expr.Ternary takeA = new Expr.Ternary(evaluatesToTrue, A, B);
+        assertEquals("A", interpreter.evaluate(takeA));
+
+        Expr.Ternary takeB = new Expr.Ternary(new Expr.Literal(false), A, B);
+        assertEquals("B", interpreter.evaluate(takeB));
+    }
+
     /* ---------- HELPER METHODS ---------- */
 
     private Object evaluateLiteral(Object expression) {
