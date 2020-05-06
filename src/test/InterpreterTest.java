@@ -53,17 +53,19 @@ public class InterpreterTest {
     @Test
     public void evaluatesUnaryBang() {
         Expr.Unary notFalse = new Expr.Unary(bang, new Expr.Literal(false));
-        assertTrue((Boolean) interpreter.evaluate(notFalse));
+        assertEquals(true, interpreter.evaluate(notFalse));
 
-        //TODO: notTrue
+        Expr.Unary notTrue = new Expr.Unary(bang, new Expr.Literal(true));
+        assertEquals(false, interpreter.evaluate(notTrue));
     }
 
     @Test
     public void evaluatesUnaryMinus() {
-        Expr.Unary notFalse = new Expr.Unary(minus, new Expr.Literal(50.0));
-        assertEquals(-50.0, interpreter.evaluate(notFalse));
+        Expr.Unary negatePositive = new Expr.Unary(minus, new Expr.Literal(50.0));
+        assertEquals(-50.0, interpreter.evaluate(negatePositive));
 
-        //TODO: -Negative
+        Expr.Unary negateNegative = new Expr.Unary(minus, new Expr.Literal(-50.0));
+        assertEquals(50.0, interpreter.evaluate(negateNegative));
     }
 
     @Test
@@ -228,7 +230,19 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinODOTHODS ----------
+    public void runtimeErrorForBinaryLessThanOrEqualToWithNonNumbers() {
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", lessEqual, 1)));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, lessEqual, "bar")));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", lessEqual, "bar")));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    /* ---------- HELPER METHODS ---------- */
+
     private Object evaluateLiteral(Object expression) {
         Expr e = new Expr.Literal(expression);
         return interpreter.evaluate(e);
