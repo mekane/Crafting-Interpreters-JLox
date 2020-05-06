@@ -149,28 +149,26 @@ public class InterpreterTest {
 
     @Test
     public void evaluatesBinaryEqual() {
-        Expr.Binary expr = new Expr.Binary(new Expr.Literal(7.0), doubleEqual, new Expr.Literal(7.0));
-        assertEquals(true, interpreter.evaluate(expr));
-
-        //TODO: false case
+        assertEquals(true, interpreter.evaluate(expr(7, doubleEqual, 7)));
+        assertEquals(false, interpreter.evaluate(expr(7, doubleEqual, 14)));
     }
 
-    //TODO: runtime errors
+    //TODO: lots more cases with different types
+    //TODO: runtime errors(?)
 
     @Test
     public void evaluatesBinaryNotEqual() {
         assertEquals(true, interpreter.evaluate(expr(7, bangEqual, 14)));
-
-        //TODO: false case
+        assertEquals(false, interpreter.evaluate(expr(7, bangEqual, 7)));
     }
 
-    //TODO: runtime errors
+    //TODO: lots more cases with different types
+    //TODO: runtime errors(?)
 
     @Test
     public void evaluatesBinaryGreaterThan() {
         assertEquals(true, interpreter.evaluate(expr(99, greater, 1)));
-
-        //TODO: false case
+        assertEquals(false, interpreter.evaluate(expr(1, greater, 99)));
     }
 
     @Test
@@ -188,12 +186,8 @@ public class InterpreterTest {
     @Test
     public void evaluatesBinaryGreaterThanOrEqualTo() {
         assertEquals(true, interpreter.evaluate(expr(99, greaterEqual, 1)));
-
-        //TODO: false case
-
         assertEquals(true, interpreter.evaluate(expr(99, greaterEqual, 99)));
-
-        //TODO: false case
+        assertEquals(false, interpreter.evaluate(expr(1, greaterEqual, 99)));
     }
 
     @Test
@@ -211,8 +205,7 @@ public class InterpreterTest {
     @Test
     public void evaluatesBinaryLessThan() {
         assertEquals(true, interpreter.evaluate(expr(1, less, 99)));
-
-        //TODO: false case
+        assertEquals(false, interpreter.evaluate(expr(99, less, 1)));
     }
 
     //TODO: runtime errors
@@ -220,12 +213,8 @@ public class InterpreterTest {
     @Test
     public void evaluatesBinaryLessThanOrEqualTo() {
         assertEquals(true, interpreter.evaluate(expr(1, lessEqual, 99)));
-
-        //TODO: false case
-
         assertEquals(true, interpreter.evaluate(expr(1, lessEqual, 1)));
-
-        //TODO: false case
+        assertEquals(false, interpreter.evaluate(expr(99, lessEqual, 1)));
     }
 
     //TODO: runtime errors
