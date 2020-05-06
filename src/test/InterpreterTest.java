@@ -70,10 +70,9 @@ public class InterpreterTest {
 
     @Test
     public void runtimeErrorForUnaryMinusWithNonNumber() {
-        Expr.Unary negateNonNumber = new Expr.Unary(minus, new Expr.Literal("muffin"));
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(negateNonNumber));
-
-        assertTrue(error.getMessage().contains("Operand must be a number"));
+        assertRuntimeError(new Expr.Unary(minus, new Expr.Literal(null)), "Operand must be a number");
+        assertRuntimeError(new Expr.Unary(minus, new Expr.Literal(true)), "Operand must be a number");
+        assertRuntimeError(new Expr.Unary(minus, new Expr.Literal("muffin")), "Operand must be a number");
     }
 
     @Test
@@ -83,14 +82,16 @@ public class InterpreterTest {
 
     @Test
     public void runtimeErrorsForBinaryMinus() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", minus, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(null, minus, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, minus, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, minus, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, minus, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, minus, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", minus, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", minus, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, minus, "bar"), "Operands must be numbers");
+
+        assertRuntimeError(expr("f", minus, "b"), "Operands must be numbers");
     }
 
     @Test
@@ -99,15 +100,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorsForBinaryStarWithOneNonNumber() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", star, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorsForBinaryStar() {
+        assertRuntimeError(expr(null, star, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, star, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, star, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, star, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, star, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", star, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", star, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, star, "bar"), "Operands must be numbers");
+
+        assertRuntimeError(expr("f", star, "b"), "Operands must be numbers");
     }
 
     @Test
@@ -116,15 +119,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinarySlashWithOneNonNumber() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", slash, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorForBinarySlash() {
+        assertRuntimeError(expr(null, slash, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, slash, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, slash, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, slash, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, slash, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", slash, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", slash, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, slash, "bar"), "Operands must be numbers");
+
+        assertRuntimeError(expr("f", slash, "b"), "Operands must be numbers");
     }
 
     @Test
@@ -138,15 +143,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinaryPlusWithMixedTypes() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", plus, 1)));
-        assertTrue(error.getMessage().contains("Operands must be two numbers or two strings"));
+    public void runtimeErrorForBinaryPlus() {
+        assertRuntimeError(expr(null, plus, 1), "Operands must be two numbers or two strings");
+        assertRuntimeError(expr(1, plus, null), "Operands must be two numbers or two strings");
+        assertRuntimeError(expr(null, plus, null), "Operands must be two numbers or two strings");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, plus, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be two numbers or two strings"));
+        assertRuntimeError(expr(false, plus, 1), "Operands must be two numbers or two strings");
+        assertRuntimeError(expr(1, plus, false), "Operands must be two numbers or two strings");
+        assertRuntimeError(expr(true, plus, false), "Operands must be two numbers or two strings");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(true, plus, false)));
-        assertTrue(error.getMessage().contains("Operands must be two numbers or two strings"));
+        assertRuntimeError(expr("foo", plus, 1), "Operands must be two numbers or two strings");
+        assertRuntimeError(expr(1, plus, "bar"), "Operands must be two numbers or two strings");
     }
 
     @Test
@@ -206,15 +213,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinaryGreaterThanWithNonNumbers() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", greater, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorForBinaryGreaterThan() {
+        assertRuntimeError(expr(null, greater, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greater, null), "Operands must be numbers");
+        assertRuntimeError(expr(null, greater, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, greater, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, greater, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greater, false), "Operands must be numbers");
+        assertRuntimeError(expr(true, greater, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", greater, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", greater, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greater, "bar"), "Operands must be numbers");
     }
 
     @Test
@@ -225,15 +234,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinaryGreaterThanOrEqualToWithNonNumbers() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", greaterEqual, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorForBinaryGreaterThanOrEqualTo() {
+        assertRuntimeError(expr(null, greaterEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greaterEqual, null), "Operands must be numbers");
+        assertRuntimeError(expr(null, greaterEqual, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, greaterEqual, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, greaterEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greaterEqual, false), "Operands must be numbers");
+        assertRuntimeError(expr(true, greaterEqual, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", greaterEqual, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", greaterEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, greaterEqual, "bar"), "Operands must be numbers");
     }
 
     @Test
@@ -243,15 +254,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinaryLessThanWithNonNumbers() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", less, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorForBinaryLessThan() {
+        assertRuntimeError(expr(null, less, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, less, null), "Operands must be numbers");
+        assertRuntimeError(expr(null, less, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, less, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, less, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, less, false), "Operands must be numbers");
+        assertRuntimeError(expr(true, less, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", less, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", less, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, less, "bar"), "Operands must be numbers");
     }
 
     @Test
@@ -262,15 +275,17 @@ public class InterpreterTest {
     }
 
     @Test
-    public void runtimeErrorForBinaryLessThanOrEqualToWithNonNumbers() {
-        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", lessEqual, 1)));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    public void runtimeErrorForBinaryLessThanOrEqualTo() {
+        assertRuntimeError(expr(null, lessEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, lessEqual, null), "Operands must be numbers");
+        assertRuntimeError(expr(null, lessEqual, null), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, lessEqual, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr(false, lessEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, lessEqual, false), "Operands must be numbers");
+        assertRuntimeError(expr(true, lessEqual, false), "Operands must be numbers");
 
-        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", lessEqual, "bar")));
-        assertTrue(error.getMessage().contains("Operands must be numbers"));
+        assertRuntimeError(expr("foo", lessEqual, 1), "Operands must be numbers");
+        assertRuntimeError(expr(1, lessEqual, "bar"), "Operands must be numbers");
     }
 
     /* ---------- HELPER METHODS ---------- */
@@ -314,5 +329,10 @@ public class InterpreterTest {
 
     private Expr.Binary expr(boolean left, Token token, String r) {
         return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
+    }
+
+    private void assertRuntimeError(Expr expr, String message) {
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr));
+        assertTrue(error.getMessage().contains(message), "Got " + error.getMessage());
     }
 }
