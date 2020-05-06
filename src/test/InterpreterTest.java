@@ -16,6 +16,14 @@ public class InterpreterTest {
     Token star = new Token(TokenType.STAR, "*", null, 0);
     Token slash = new Token(TokenType.SLASH, "/", null, 0);
 
+    Token greater = new Token(TokenType.GREATER, ">", null, 0);
+    Token greaterEqual = new Token(TokenType.GREATER_EQUAL, ">=", null, 0);
+    Token less = new Token(TokenType.LESS, "<", null, 0);
+    Token lessEqual = new Token(TokenType.LESS_EQUAL, "<=", null, 0);
+
+    Token doubleEqual = new Token(TokenType.EQUAL_EQUAL, "==", null, 0);
+    Token bangEqual = new Token(TokenType.BANG_EQUAL, "!=", null, 0);
+
     @Test
     public void evaluatesLiteralNull() {
         assertEquals(null, evaluateLiteral(null));
@@ -83,6 +91,50 @@ public class InterpreterTest {
         Expr.Binary concatenate = new Expr.Binary(new Expr.Literal("foo"), plus, new Expr.Literal("bar"));
         assertEquals("foobar", interpreter.evaluate(concatenate));
     }
+
+    @Test
+    public void evaluatesBinaryEqual() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(7.0), doubleEqual, new Expr.Literal(7.0));
+        assertEquals(true, interpreter.evaluate(expr));
+    }
+
+    @Test
+    public void evaluatesBinaryNotEqual() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(7.0), bangEqual, new Expr.Literal(14.0));
+        assertEquals(true, interpreter.evaluate(expr));
+    }
+
+    @Test
+    public void evaluatesBinaryGreaterThan() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(99.0), greater, new Expr.Literal(1.0));
+        assertEquals(true, interpreter.evaluate(expr));
+    }
+
+    @Test
+    public void evaluatesBinaryGreaterThanOrEqualTo() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(99.0), greaterEqual, new Expr.Literal(1.0));
+        assertEquals(true, interpreter.evaluate(expr));
+
+        expr = new Expr.Binary(new Expr.Literal(99.0), greaterEqual, new Expr.Literal(99.0));
+        assertEquals(true, interpreter.evaluate(expr));
+    }
+
+    @Test
+    public void evaluatesBinaryLessThan() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(1.0), less, new Expr.Literal(99.0));
+        assertEquals(true, interpreter.evaluate(expr));
+
+    }
+
+    @Test
+    public void evaluatesBinaryLessThanOrEqualTo() {
+        Expr.Binary expr = new Expr.Binary(new Expr.Literal(1.0), lessEqual, new Expr.Literal(99.0));
+        assertEquals(true, interpreter.evaluate(expr));
+
+        expr = new Expr.Binary(new Expr.Literal(1.0), lessEqual, new Expr.Literal(1.0));
+        assertEquals(true, interpreter.evaluate(expr));
+    }
+
 
     private Object evaluateLiteral(Object expression) {
         Expr e = new Expr.Literal(expression);

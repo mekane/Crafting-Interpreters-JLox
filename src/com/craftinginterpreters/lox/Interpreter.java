@@ -46,6 +46,18 @@ public class Interpreter implements Expr.Visitor<Object> {
                 return (double) left / (double) right;
             case STAR:
                 return (double) left * (double) right;
+            case GREATER:
+                return (double) left > (double) right;
+            case GREATER_EQUAL:
+                return (double) left >= (double) right;
+            case LESS:
+                return (double) left < (double) right;
+            case LESS_EQUAL:
+                return (double) left <= (double) right;
+            case BANG_EQUAL:
+                return !isEqual(left, right);
+            case EQUAL_EQUAL:
+                return isEqual(left, right);
         }
 
         // Unreachable.
@@ -65,6 +77,17 @@ public class Interpreter implements Expr.Visitor<Object> {
 
         return true;
     }
+
+    private boolean isEqual(Object a, Object b) {
+        // nil is only equal to nil.
+        if (a == null && b == null)
+            return true;
+        if (a == null)
+            return false;
+
+        return a.equals(b);
+    }
+
 
     public Object evaluate(Expr expr) {
         return expr.accept(this);
