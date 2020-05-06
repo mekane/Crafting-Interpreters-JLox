@@ -208,7 +208,24 @@ public class InterpreterTest {
         //TODO: false case
     }
 
-    //TODO: runtime errors
+    @Test
+    public void runtimeErrorForBinaryGreaterThanWithOneNonNumber() {
+        Expr.Binary compareNonNumberL = new Expr.Binary(new Expr.Literal("foo"), greater, new Expr.Literal(1.0));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(compareNonNumberL));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        Expr.Binary compareNonNumberR = new Expr.Binary(new Expr.Literal(1.0), greater, new Expr.Literal("bar"));
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(compareNonNumberR));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
+    public void runtimeErrorForBinaryGreaterThanWithTwoNonNumbers() {
+        Expr.Binary compareNonNumbers = new Expr.Binary(new Expr.Literal("foo"), greater, new Expr.Literal("bar"));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(compareNonNumbers));
+
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
 
     @Test
     public void evaluatesBinaryGreaterThanOrEqualTo() {
