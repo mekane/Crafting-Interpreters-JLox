@@ -151,21 +151,53 @@ public class InterpreterTest {
 
     @Test
     public void evaluatesBinaryEqual() {
+        assertEquals(true, interpreter.evaluate(expr(null, doubleEqual, null)));
+        assertEquals(true, interpreter.evaluate(expr(true, doubleEqual, true)));
+        assertEquals(true, interpreter.evaluate(expr(false, doubleEqual, false)));
         assertEquals(true, interpreter.evaluate(expr(7, doubleEqual, 7)));
-        assertEquals(false, interpreter.evaluate(expr(7, doubleEqual, 14)));
-    }
+        assertEquals(true, interpreter.evaluate(expr("test", doubleEqual, "test")));
 
-    //TODO: lots more cases with different types
-    //TODO: runtime errors(?)
+        assertEquals(false, interpreter.evaluate(expr(null, doubleEqual, 1)));
+        assertEquals(false, interpreter.evaluate(expr(null, doubleEqual, "anything")));
+        assertEquals(false, interpreter.evaluate(expr(7, doubleEqual, null)));
+        assertEquals(false, interpreter.evaluate(expr("anything", doubleEqual, null)));
+
+        assertEquals(false, interpreter.evaluate(expr(true, doubleEqual, false)));
+        assertEquals(false, interpreter.evaluate(expr(false, doubleEqual, true)));
+        assertEquals(false, interpreter.evaluate(expr(7, doubleEqual, 14)));
+        assertEquals(false, interpreter.evaluate(expr("foo", doubleEqual, "bar")));
+
+        assertEquals(false, interpreter.evaluate(expr(false, doubleEqual, "")));
+        assertEquals(false, interpreter.evaluate(expr(false, doubleEqual, "false")));
+        assertEquals(false, interpreter.evaluate(expr(true, doubleEqual, 14)));
+        assertEquals(false, interpreter.evaluate(expr(false, doubleEqual, 15)));
+        assertEquals(false, interpreter.evaluate(expr(1, doubleEqual, "1")));
+    }
 
     @Test
     public void evaluatesBinaryNotEqual() {
-        assertEquals(true, interpreter.evaluate(expr(7, bangEqual, 14)));
+        assertEquals(false, interpreter.evaluate(expr(null, bangEqual, null)));
+        assertEquals(false, interpreter.evaluate(expr(true, bangEqual, true)));
+        assertEquals(false, interpreter.evaluate(expr(false, bangEqual, false)));
         assertEquals(false, interpreter.evaluate(expr(7, bangEqual, 7)));
-    }
+        assertEquals(false, interpreter.evaluate(expr("test", bangEqual, "test")));
 
-    //TODO: lots more cases with different types
-    //TODO: runtime errors(?)
+        assertEquals(true, interpreter.evaluate(expr(null, bangEqual, 1)));
+        assertEquals(true, interpreter.evaluate(expr(null, bangEqual, "anything")));
+        assertEquals(true, interpreter.evaluate(expr(7, bangEqual, null)));
+        assertEquals(true, interpreter.evaluate(expr("anything", bangEqual, null)));
+
+        assertEquals(true, interpreter.evaluate(expr(false, bangEqual, true)));
+        assertEquals(true, interpreter.evaluate(expr(true, bangEqual, false)));
+        assertEquals(true, interpreter.evaluate(expr(7, bangEqual, 14)));
+        assertEquals(true, interpreter.evaluate(expr("foo", bangEqual, "bar")));
+
+        assertEquals(true, interpreter.evaluate(expr(false, bangEqual, "")));
+        assertEquals(true, interpreter.evaluate(expr(false, bangEqual, "false")));
+        assertEquals(true, interpreter.evaluate(expr(true, bangEqual, 14)));
+        assertEquals(true, interpreter.evaluate(expr(false, bangEqual, 15)));
+        assertEquals(true, interpreter.evaluate(expr(1, bangEqual, "1")));
+    }
 
     @Test
     public void evaluatesBinaryGreaterThan() {
@@ -265,6 +297,22 @@ public class InterpreterTest {
     }
 
     private Expr.Binary expr(boolean left, Token token, boolean r) {
+        return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
+    }
+
+    private Expr.Binary expr(int left, Token token, boolean r) {
+        return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
+    }
+
+    private Expr.Binary expr(boolean left, Token token, int r) {
+        return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
+    }
+
+    private Expr.Binary expr(String left, Token token, boolean r) {
+        return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
+    }
+
+    private Expr.Binary expr(boolean left, Token token, String r) {
         return new Expr.Binary(new Expr.Literal(left), token, new Expr.Literal(r));
     }
 }
