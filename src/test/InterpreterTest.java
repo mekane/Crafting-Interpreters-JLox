@@ -208,7 +208,17 @@ public class InterpreterTest {
         assertEquals(false, interpreter.evaluate(expr(99, less, 1)));
     }
 
-    //TODO: runtime errors
+    @Test
+    public void runtimeErrorForBinaryLessThanWithNonNumbers() {
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", less, 1)));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr(1, less, "bar")));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(expr("foo", less, "bar")));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
 
     @Test
     public void evaluatesBinaryLessThanOrEqualTo() {
@@ -217,9 +227,8 @@ public class InterpreterTest {
         assertEquals(false, interpreter.evaluate(expr(99, lessEqual, 1)));
     }
 
-    //TODO: runtime errors
-
-
+    @Test
+    public void runtimeErrorForBinODOTHODS ----------
     private Object evaluateLiteral(Object expression) {
         Expr e = new Expr.Literal(expression);
         return interpreter.evaluate(e);
