@@ -54,12 +54,24 @@ public class InterpreterTest {
     public void evaluatesUnaryBang() {
         Expr.Unary notFalse = new Expr.Unary(bang, new Expr.Literal(false));
         assertTrue((Boolean) interpreter.evaluate(notFalse));
+
+        //TODO: notTrue
     }
 
     @Test
     public void evaluatesUnaryMinus() {
         Expr.Unary notFalse = new Expr.Unary(minus, new Expr.Literal(50.0));
         assertEquals(-50.0, interpreter.evaluate(notFalse));
+
+        //TODO: -Negative
+    }
+
+    @Test
+    public void runtimeErrorForUnaryMinusWithNonNumber() {
+        Expr.Unary negateNonNumber = new Expr.Unary(minus, new Expr.Literal("muffin"));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(negateNonNumber));
+
+        assertTrue(error.getMessage().contains("Operand must be a number"));
     }
 
     @Test
@@ -69,15 +81,72 @@ public class InterpreterTest {
     }
 
     @Test
+    public void runtimeErrorForBinaryMinusWithOneNonNumber() {
+        Expr.Binary subtractFromNonNumber = new Expr.Binary(new Expr.Literal("foo"), minus, new Expr.Literal(1.0));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(subtractFromNonNumber));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        Expr.Binary subtractNonNumber = new Expr.Binary(new Expr.Literal(1.0), minus, new Expr.Literal("bar"));
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(subtractNonNumber));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
+    public void runtimeErrorForBinaryMinusWithTwoNonNumbers() {
+        Expr.Binary subtractNonNumbers = new Expr.Binary(new Expr.Literal("foo"), minus, new Expr.Literal("bar"));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(subtractNonNumbers));
+
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
     public void evaluatesBinaryStar() {
         Expr.Binary multiply = new Expr.Binary(new Expr.Literal(10.0), star, new Expr.Literal(2.0));
         assertEquals(20.0, interpreter.evaluate(multiply));
     }
 
     @Test
+    public void runtimeErrorForBinaryStarWithOneNonNumber() {
+        Expr.Binary multiplyNonNumberL = new Expr.Binary(new Expr.Literal("foo"), star, new Expr.Literal(1.0));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(multiplyNonNumberL));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        Expr.Binary multiplyNonNumberR = new Expr.Binary(new Expr.Literal(1.0), star, new Expr.Literal("bar"));
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(multiplyNonNumberR));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
+    public void runtimeErrorForBinaryStarWithTwoNonNumbers() {
+        Expr.Binary multiplyNonNumbers = new Expr.Binary(new Expr.Literal("foo"), star, new Expr.Literal("bar"));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(multiplyNonNumbers));
+
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
     public void evaluatesBinarySlash() {
         Expr.Binary divide = new Expr.Binary(new Expr.Literal(10.0), slash, new Expr.Literal(2.0));
         assertEquals(5.0, interpreter.evaluate(divide));
+    }
+
+    @Test
+    public void runtimeErrorForBinarySlashWithOneNonNumber() {
+        Expr.Binary divideNonNumberL = new Expr.Binary(new Expr.Literal("foo"), slash, new Expr.Literal(1.0));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(divideNonNumberL));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+
+        Expr.Binary divideNonNumberR = new Expr.Binary(new Expr.Literal(1.0), slash, new Expr.Literal("bar"));
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(divideNonNumberR));
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
+    public void runtimeErrorForBinarySlashWithTwoNonNumbers() {
+        Expr.Binary multiplyNonNumbers = new Expr.Binary(new Expr.Literal("foo"), slash, new Expr.Literal("bar"));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(multiplyNonNumbers));
+
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
     }
 
     @Test
@@ -93,47 +162,93 @@ public class InterpreterTest {
     }
 
     @Test
+    public void runtimeErrorForBinaryPlusWithMixedTypes() {
+        Expr.Binary addStringAndNumber = new Expr.Binary(new Expr.Literal("foo"), plus, new Expr.Literal(1.0));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(addStringAndNumber));
+        assertTrue(error.getMessage().contains("Operands must be two numbers or two strings"));
+
+        Expr.Binary addNumberAndString = new Expr.Binary(new Expr.Literal(1.0), plus, new Expr.Literal("bar"));
+        error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(addNumberAndString));
+        assertTrue(error.getMessage().contains("Operands must be two numbers or two strings"));
+    }
+
+    @Test
+    public void runtimeErrorForBinaryPlusWithNeitherNumbersOrStrings() {
+        Expr.Binary multiplyNonNumbers = new Expr.Binary(new Expr.Literal(true), slash, new Expr.Literal(false));
+        RuntimeError error = assertThrows(RuntimeError.class, () -> interpreter.evaluate(multiplyNonNumbers));
+
+        assertTrue(error.getMessage().contains("Operands must be numbers"));
+    }
+
+    @Test
     public void evaluatesBinaryEqual() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(7.0), doubleEqual, new Expr.Literal(7.0));
         assertEquals(true, interpreter.evaluate(expr));
+
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
     @Test
     public void evaluatesBinaryNotEqual() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(7.0), bangEqual, new Expr.Literal(14.0));
         assertEquals(true, interpreter.evaluate(expr));
+
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
     @Test
     public void evaluatesBinaryGreaterThan() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(99.0), greater, new Expr.Literal(1.0));
         assertEquals(true, interpreter.evaluate(expr));
+
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
     @Test
     public void evaluatesBinaryGreaterThanOrEqualTo() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(99.0), greaterEqual, new Expr.Literal(1.0));
         assertEquals(true, interpreter.evaluate(expr));
 
+        //TODO: false case
+
         expr = new Expr.Binary(new Expr.Literal(99.0), greaterEqual, new Expr.Literal(99.0));
         assertEquals(true, interpreter.evaluate(expr));
+
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
     @Test
     public void evaluatesBinaryLessThan() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(1.0), less, new Expr.Literal(99.0));
         assertEquals(true, interpreter.evaluate(expr));
 
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
     @Test
     public void evaluatesBinaryLessThanOrEqualTo() {
         Expr.Binary expr = new Expr.Binary(new Expr.Literal(1.0), lessEqual, new Expr.Literal(99.0));
         assertEquals(true, interpreter.evaluate(expr));
 
+        //TODO: false case
+
         expr = new Expr.Binary(new Expr.Literal(1.0), lessEqual, new Expr.Literal(1.0));
         assertEquals(true, interpreter.evaluate(expr));
+
+        //TODO: false case
     }
+
+    //TODO: runtime errors
 
 
     private Object evaluateLiteral(Object expression) {
