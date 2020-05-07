@@ -78,11 +78,25 @@ public abstract class Expr {
         }
     }
 
+    public static class Variable extends Expr {
+        Variable(Token name) {
+            this.name = name;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitVariableExpr(this);
+        }
+
+        final Token name;
+    }
 
     interface Visitor<R> {
         //R visitAssignExpr(Assign expr);
         R visitBinaryExpr(Binary expr);
+
         R visitTernaryExpr(Ternary expr);
+
         //R visitCallExpr(Call expr);
         //R visitGetExpr(Get expr);
         R visitGroupingExpr(Grouping expr);
@@ -94,6 +108,7 @@ public abstract class Expr {
 //        R visitSuperExpr(Super expr);
 //        R visitThisExpr(This expr);
         R visitUnaryExpr(Unary expr);
-//        R visitVariableExpr(Variable expr);
+
+        R visitVariableExpr(Variable expr);
     }
 }

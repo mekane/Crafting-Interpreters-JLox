@@ -6,9 +6,12 @@ import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 
 /****
- program        → statement* EOF;
+ program        → declaration* EOF;
+ declaration    → varDecl
+ -              | statement ;
+ varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
  statement      → exprStmt
- -              | printStmt;
+ -              | printStmt ;
  exprStmt       → expression ;
  printStmt      → "print" expression ";"
  expression     → equality ("?" equality ":" equality)* ;
@@ -19,7 +22,8 @@ import static com.craftinginterpreters.lox.TokenType.*;
  unary          → ( "!" | "-" ) unary
  _              | primary ;
  primary        → NUMBER | STRING | "false" | "true" | "nil"
- _              | "(" expression ")" ;
+ _              | "(" expression ")"
+ -              | IDENTIFIER ;
  ****/
 public class Parser {
     private final List<Token> tokens;
@@ -32,10 +36,22 @@ public class Parser {
     public List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
-            statements.add(statement());
+            statements.add(declaration());
         }
 
         return statements;
+    }
+
+    private Stmt declaration() {
+        try {
+            if (match(VAR))
+                return varDeclaration();
+            else
+                return statement();
+        } catch (ParseError error) {
+            synchronize();
+            return null;
+        }
     }
 
     private Stmt statement() {
@@ -49,6 +65,18 @@ public class Parser {
         Expr value = expression();
         consume(SEMICOLON, "Expect ';' after value.");
         return new Stmt.Print(value);
+    }
+
+    private Stmt varDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect variable name.");
+
+        Expr initializer = null;
+        if (match(EQUAL)) {
+            initializer = expression();
+        }
+
+        consume(SEMICOLON, "Expect ';' after variable declaration.");
+        return new Stmt.Var(name, initializer);
     }
 
     private Stmt expressionStatement() {
@@ -141,13 +169,18 @@ public class Parser {
     }
 
     private Expr primary() {
-        if (match(FALSE)) return new Expr.Literal(false);
-        if (match(TRUE)) return new Expr.Literal(true);
-        if (match(NIL)) return new Expr.Literal(null);
+        if (match(FALSE))
+            return new Expr.Literal(false);
+        if (match(TRUE))
+            return new Expr.Literal(true);
+        if (match(NIL))
+            return new Expr.Literal(null);
 
-        if (match(NUMBER, STRING)) {
+        if (match(NUMBER, STRING))
             return new Expr.Literal(previous().literal);
-        }
+
+        if (match(IDENTIFIER))
+            return new Expr.Variable(previous());
 
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
