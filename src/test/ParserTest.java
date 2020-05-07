@@ -125,7 +125,7 @@ class ParserTest {
 
     private Expr parseSingleExpression(String expression) {
         Parser p = new Parser(new Scanner(expression).scanTokens());
-        return p.parse();
+        return p.expression();
     }
 
     private void assertBinaryExpression(Expr.Binary e, boolean left, TokenType tokenType, boolean right) {
