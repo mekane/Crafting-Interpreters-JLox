@@ -14,7 +14,10 @@ import static com.craftinginterpreters.lox.TokenType.*;
  -              | printStmt ;
  exprStmt       → expression ;
  printStmt      → "print" expression ";"
- expression     → equality ("?" equality ":" equality)* ;
+ expression     → assignment ;
+ assignment     → IDENTIFIER "=" assignment
+ -              | ternary ;
+ ternary        → equality ("?" equality ":" equality)* ;
  equality       → comparison ( ( "!=" | "==" ) comparison )* ;
  comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
  addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
@@ -86,6 +89,28 @@ public class Parser {
     }
 
     public Expr expression() {
+        return assignment();
+    }
+
+    public Expr assignment() {
+        Expr expr = ternary();
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+
+    public Expr ternary() {
         Expr expr = equality();
 
         Expr left = null;

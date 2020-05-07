@@ -1,0 +1,44 @@
+/* Block comments are ignored */
+/* Including
+ * ones that span
+ * multiple lines */
+// Single line comments too
+
+// You can print any expression. (Semicolons required)
+print true;
+
+// String are double-quoted:
+print "foobar";
+
+// Use + to concatenate strings:
+print "a" + " sentence " + "like this";
+
+// Standard Math and equality tests exist:
+print 2 + 2;
+print 9 - 7;
+print 6 * 6;
+print 24 / 8;
+
+// Use parentheses to group expressions and for operator precedence:
+print 1 + 2 * 3;
+print (1 + 2) * 3;
+
+// These evaluate to booleans
+print true == false;
+print true != false;
+print 1 < 10;
+print 2 <= 2;
+print 3 > 5;
+print 5 >= (5 + 4);
+
+// Ternary operator:
+print true ? "yes" : "no";
+
+// Variables:
+var a = 2;
+print a;
+a = a + 2;
+print a;
+a = a + 2;
+print a;
+
