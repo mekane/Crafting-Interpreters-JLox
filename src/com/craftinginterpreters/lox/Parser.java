@@ -11,12 +11,14 @@ import static com.craftinginterpreters.lox.TokenType.*;
  -              | statement ;
  varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
  statement      → exprStmt
- -              | printStmt ;
+ -              | block ;
+ -              | printStmt
  exprStmt       → expression ;
+ block          → "{" declaration* "}" ;
  printStmt      → "print" expression ";"
  expression     → assignment ;
  assignment     → IDENTIFIER "=" assignment
- -              | ternary ;
+ -              | ternary ;     (NOTE: in the book this | is equality. I put ternary in there.
  ternary        → equality ("?" equality ":" equality)* ;
  equality       → comparison ( ( "!=" | "==" ) comparison )* ;
  comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
@@ -61,6 +63,9 @@ public class Parser {
         if (match(PRINT))
             return printStatement();
 
+        if (match(LEFT_BRACE))
+            return new Stmt.Block(block());
+
         return expressionStatement();
     }
 
@@ -88,6 +93,17 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
+    private List<Stmt> block() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
+    }
+
     public Expr expression() {
         return assignment();
     }
@@ -100,7 +116,7 @@ public class Parser {
             Expr value = assignment();
 
             if (expr instanceof Expr.Variable) {
-                Token name = ((Expr.Variable)expr).name;
+                Token name = ((Expr.Variable) expr).name;
                 return new Expr.Assign(name, value);
             }
 
