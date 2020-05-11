@@ -17,6 +17,19 @@ import static java.util.Arrays.asList;
 class ScannerTest {
 
     @Test
+    public void countsLinesScanned() {
+        String source = "one line";
+        Scanner scanner = new Scanner(source);
+        scanner.scanTokens();
+        assertEquals(1, scanner.getLineCount());
+
+        source = "one line\ntwo lines";
+        scanner = new Scanner(source);
+        scanner.scanTokens();
+        assertEquals(2, scanner.getLineCount());
+    }
+
+    @Test
     public void addsEofToken() {
         String source = "";
         Scanner scanner = new Scanner(source);
@@ -119,6 +132,20 @@ class ScannerTest {
     }
 
     @Test
+    public void correctlyUpdatesLineCountForBlockComments() {
+        String source = "line one\n" +
+                "line two (\n" +
+                "/* multi-line\n" +
+                "block\n" +
+                "comment */\n" +
+                ")";
+        Scanner scanner = new Scanner(source);
+        scanner.scanTokens();
+
+        assertEquals(6, scanner.getLineCount());
+    }
+
+    @Test
     public void scansPlusSignAndNumbers() {
         Scanner scanner = new Scanner("2 + 3");
 
@@ -145,8 +172,6 @@ class ScannerTest {
 
         assertTokensMatch(asList(TRUE, QUESTION, TRUE, COLON, FALSE), scanner.scanTokens());
     }
-
-
 
 
     private void assertTokensMatch(List<TokenType> expectedTokens, List<Token> actualTokens) {

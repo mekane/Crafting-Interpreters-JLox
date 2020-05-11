@@ -138,7 +138,8 @@ public class Scanner {
 
     private void string() {
         while (peek() != '"' && !isAtEnd()) {
-            if (peek() == '\n') line++;
+            if (peek() == '\n')
+                line++;
             advance();
         }
 
@@ -190,6 +191,8 @@ public class Scanner {
 
         while (peek() != '*' || peekNext() != '/') {
             //System.out.println(String.format("Scanning %s (%b)   %s (%b)", peek(), (peek() != '*'), peekNext(), (peekNext() != '/')));
+            if (peek() == '\n')
+                line++;
             advance();
         }
         //System.out.println(String.format("Stopped on %s (%b)   %s (%b)", peek(), (peek() != '*'), peekNext(), (peekNext() != '/')));
@@ -244,5 +247,9 @@ public class Scanner {
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
+    }
+
+    public int getLineCount() {
+        return this.line;
     }
 }
