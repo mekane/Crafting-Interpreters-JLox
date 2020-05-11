@@ -63,3 +63,23 @@ print a;
 print b;
 print c;
 
+// If statements:
+if (true)
+  print "if true";
+
+if (false)
+  print "never";
+else
+  print "if false";
+
+if (true)
+  if (true)
+    print "both true";
+  else
+    print "else goes with inner if";
+
+if (true) {
+  print "use braces";
+  print "for statement blocks";
+}
+
