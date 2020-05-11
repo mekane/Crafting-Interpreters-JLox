@@ -20,8 +20,10 @@ import static com.craftinginterpreters.lox.TokenType.*;
  printStmt      → "print" expression ";"
  expression     → assignment ;
  assignment     → IDENTIFIER "=" assignment
- -              | ternary ;     (NOTE: in the book this | is equality. I put ternary in there.
- ternary        → equality ("?" equality ":" equality)* ;
+ -              | ternary ;     (NOTE: in the book this | is logic_or. I added ternary in there.
+ ternary        → logic_or ("?" logic_or ":" logic_or)* ;
+ logic_or       → logic_and ( "or" logic_and )* ;
+ logic_and      → equality ( "and" equality )* ;
  equality       → comparison ( ( "!=" | "==" ) comparison )* ;
  comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
  addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
@@ -146,16 +148,16 @@ public class Parser {
     }
 
     public Expr ternary() {
-        Expr expr = equality();
+        Expr expr = equality(); //TODO: logic_or
 
         Expr left = null;
         Expr right = null;
 
         if (match(QUESTION)) {
-            left = equality();
+            left = equality(); //TODO: logic_or
 
             if (match(COLON)) {
-                right = equality();
+                right = equality(); //TODO: logic_or
 
                 expr = new Expr.Ternary(expr, left, right);
             } else {
