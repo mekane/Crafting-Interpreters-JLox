@@ -41,6 +41,9 @@ public class Lox {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
+        System.out.println("Welcome to the JLox REPL!");
+        System.out.println("Enter a statement and press Enter to evaluate it. Send ctrl-c to quit.");
+
         for (; ; ) {
             System.out.print("> ");
             run(reader.readLine());

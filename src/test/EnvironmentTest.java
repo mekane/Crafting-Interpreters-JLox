@@ -1,8 +1,9 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.craftinginterpreters.lox.*;
+import com.craftinginterpreters.lox.Environment;
+import com.craftinginterpreters.lox.RuntimeError;
+import com.craftinginterpreters.lox.Token;
+import com.craftinginterpreters.lox.TokenType;
 
 import org.junit.jupiter.api.Test;
 

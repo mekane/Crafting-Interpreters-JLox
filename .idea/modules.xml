@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Crafting Interpreters JLox.iml" filepath="$PROJECT_DIR$/Crafting Interpreters JLox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Crafting-Interpreters-JLox.iml" filepath="$PROJECT_DIR$/Crafting-Interpreters-JLox.iml" />
     </modules>
   </component>
 </project>
