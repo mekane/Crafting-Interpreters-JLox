@@ -48,6 +48,23 @@ public abstract class Expr {
         }
     }
 
+    public static class Logical extends Expr {
+        public Logical(Expr left, Token operator, Expr right) {
+            this.left = left;
+            this.operator = operator;
+            this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitLogicalExpr(this);
+        }
+
+        final Expr left;
+        final Token operator;
+        final Expr right;
+    }
+
     public static class Ternary extends Expr {
         public final Expr condition;
         public final Expr left;
@@ -119,8 +136,9 @@ public abstract class Expr {
 
         R visitLiteralExpr(Literal expr);
 
-        //        R visitLogicalExpr(Logical expr);
-//        R visitSetExpr(Set expr);
+        R visitLogicalExpr(Logical expr);
+
+        //        R visitSetExpr(Set expr);
 //        R visitSuperExpr(Super expr);
 //        R visitThisExpr(This expr);
         R visitUnaryExpr(Unary expr);

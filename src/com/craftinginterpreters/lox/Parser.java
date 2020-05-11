@@ -148,21 +148,45 @@ public class Parser {
     }
 
     public Expr ternary() {
-        Expr expr = equality(); //TODO: logic_or
+        Expr expr = or();
 
         Expr left = null;
         Expr right = null;
 
         if (match(QUESTION)) {
-            left = equality(); //TODO: logic_or
+            left = or();
 
             if (match(COLON)) {
-                right = equality(); //TODO: logic_or
+                right = or();
 
                 expr = new Expr.Ternary(expr, left, right);
             } else {
                 throw error(peek(), "Expect colon after beginning of ternary expression.");
             }
+        }
+
+        return expr;
+    }
+
+    private Expr or() {
+        Expr expr = and();
+
+        while (match(OR)) {
+            Token operator = previous();
+            Expr right = and();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr and() {
+        Expr expr = equality();
+
+        while (match(AND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
         }
 
         return expr;
