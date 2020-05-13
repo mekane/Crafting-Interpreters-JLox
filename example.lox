@@ -101,5 +101,11 @@ for (var i = 0 ; i < 5 ; i = i + 1) {
   print i;
 }
 
-print "clock:";
+print "built in function clock:";
 print clock();
+
+function sayHi(first, last) {
+  print "Hi, " + first + " " + last + "!";
+}
+
+sayHi("Dear", "Reader");
