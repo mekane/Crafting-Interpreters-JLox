@@ -109,3 +109,30 @@ function sayHi(first, last) {
 }
 
 sayHi("Dear", "Reader");
+
+//Exercise functions, return values, control statements, etc.
+function fibonacci(n) {
+  if (n <= 1)
+    return n;
+  return fibonacci(n - 2) + fibonacci(n - 1);
+}
+
+for (var i = 0; i < 20; i = i + 1) {
+  print fibonacci(i);
+}
+
+//Inner functions and closures work!
+function makeCounter() {
+  var i = 0;
+  function count() {
+    i = i + 1;
+    print i;
+  }
+
+  return count;
+}
+
+var counterFn = makeCounter();
+counterFn(); // "1"
+counterFn(); // "2"
+counterFn(); // "3"

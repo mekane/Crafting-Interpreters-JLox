@@ -15,7 +15,8 @@ public abstract class Stmt {
 
         R visitPrintStmt(Print stmt);
 
-        //R visitReturnStmt(Return stmt);
+        R visitReturnStmt(Return stmt);
+
         R visitVarStmt(Var stmt);
 
         R visitWhileStmt(While stmt);
@@ -92,6 +93,21 @@ public abstract class Stmt {
         final Expr condition;
         final Stmt thenBranch;
         final Stmt elseBranch;
+    }
+
+    public static class Return extends Stmt {
+        public Return(Token keyword, Expr value) {
+            this.keyword = keyword;
+            this.value = value;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitReturnStmt(this);
+        }
+
+        final Token keyword;
+        final Expr value;
     }
 
     public static class While extends Stmt {

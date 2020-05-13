@@ -20,7 +20,8 @@ import static com.craftinginterpreters.lox.TokenType.*;
  -              | forStmt
  -              | whileStmt
  -              | block
- -              | printStmt ;
+ -              | printStmt
+ -              | returnStmt ;
  exprStmt       → expression ;
  ifStmt         → "if" "(" expression ")" statement ( "else" statement )? ;
  forStmt        → "for" "(" ( varDecl | exprStmt | ";" )
@@ -28,7 +29,8 @@ import static com.craftinginterpreters.lox.TokenType.*;
  -                          expression? ")" statement ;
  whileStmt      → "while" "(" expression ")" statement ;
  block          → "{" declaration* "}" ;
- printStmt      → "print" expression ";"
+ printStmt      → "print" expression ";" ;
+ returnStmt     → "return" expression? ";" ;
  expression     → assignment ;
  assignment     → IDENTIFIER "=" assignment
  -              | ternary ;     (NOTE: in the book this | is logic_or. I added ternary in there.
@@ -82,6 +84,9 @@ public class Parser {
 
         if (match(FOR))
             return forStatement();
+
+        if (match(RETURN))
+            return returnStatement();
 
         if (match(WHILE))
             return whileStatement();
@@ -166,6 +171,17 @@ public class Parser {
         Expr value = expression();
         consume(SEMICOLON, "Expect ';' after value.");
         return new Stmt.Print(value);
+    }
+
+    private Stmt returnStatement() {
+        Token keyword = previous();
+        Expr value = null;
+        if (!check(SEMICOLON)) {
+            value = expression();
+        }
+
+        consume(SEMICOLON, "Expect ';' after return value.");
+        return new Stmt.Return(keyword, value);
     }
 
     private Stmt.Function function(String kind) {
